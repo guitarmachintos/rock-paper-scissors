@@ -44,16 +44,17 @@ function playRound() {
     let humanChoice = getHumanChoice().toLowerCase();
 
     //For keeping track who won and print message accordingly
-    let oriHumanScore = humanScore;
-    let oriCompScore = computerScore;
-
-    if(computerChoice === humanChoice){
-        console.log(`Draw! You both drew ${capitalizeText(computerChoice)}`)
-        return;
-    }
+    let oriHumanScore = humanScore;    
 
     if(!(humanChoice === "rock" || humanChoice === "paper" || humanChoice === "scissors")){
         console.error("Invalid human input!");
+        return;
+    }
+
+    if(computerChoice === humanChoice){
+        humanScore++;
+        computerScore++;
+        console.log(`Draw! You both drew ${capitalizeText(computerChoice)}`)        
         return;
     }
     
