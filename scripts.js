@@ -31,14 +31,11 @@ function capitalizeText(text){
 //     console.log(getComputerChoice());
 // }
 
-function getHumanChoice() {
-    let choice = prompt("Pick your weapon: ");
-    return choice;
-}
+
 
 function playRound() {
     let computerChoice = getComputerChoice().toLowerCase();
-    let humanChoice = getHumanChoice().toLowerCase();
+    let humanChoice = curHumanChoice.toLowerCase();
 
     //For keeping track who won and print message accordingly
     let oriHumanScore = humanScore;    
@@ -112,11 +109,53 @@ function playGame(nWins) {
     }
 }
 
+function checkGame() { 
+    let winMessage;
+    if (humanScore > computerScore){
+        winMessage = `You win! ${humanScore}:${computerScore}`;
+    }
+    else if (humanScore < computerScore){
+        winMessage = `You lose! ${humanScore}:${computerScore}`;
+    }
+    else{
+        winMessage = `Draw! ${humanScore}:${computerScore}`;
+    }
+
+    if(humanScore === winGoals || computerScore === winGoals){
+        const finishGame = document.createElement('div');
+        finishGame.innerText = "Game Finished!" +" " + winMessage
+        const gameContent = document.querySelector('.gameContent');
+        gameContent.appendChild(finishGame);
+        return true;
+    }
+    return false;
+}
+
+let humanScoreValue1;
+let computerScoreValue1;
+let tieCounter1;
+let roundCounter1;
+
+function initializeCounters(){
+    humanScoreValue1 = document.querySelector('#humanScoreValue');
+    computerScoreValue1 = document.querySelector('#computerScoreValue');
+    tieCounter1 = document.querySelector('#tieCounter');
+    roundCounter1 = document.querySelector('#roundCounter')
+}
+
+function updateScore(){
+    humanScoreValue1.innerText = humanScore;
+    computerScoreValue1.innerText = computerScore;
+    tieCounter1.innerText = tieScore;
+    roundCounter1.innerText = roundPlayed;
+}
+
 let humanScore = 0;
 let computerScore = 0;
 let tieScore = 0;
 let roundPlayed = 0;
 let winGoals = 0;
+let curHumanChoice = 'nothing';
 
 function clearContent(){
     document.body.textContent = '';
@@ -138,13 +177,16 @@ function addGameContent(){
     gameTitle.innerText = "Round-"
 
     const roundCounter = document.createElement('span');
-    roundCounter.innerText = "1";
+    roundCounter.innerText = "0";
+    roundCounter.id = "roundCounter";
     gameTitle.appendChild(roundCounter);
 
     const humanScoreLabel = document.createElement('span');
     const humanScoreValue = document.createElement('span');
+    humanScoreValue.id = 'humanScoreValue';
     const computerScoreLabel = document.createElement('span');
     const computerScoreValue = document.createElement('span');
+    computerScoreValue.id = 'computerScoreValue';
 
     humanScoreLabel.innerText = "Human: ";
     humanScoreValue.innerText = "0";
@@ -156,27 +198,81 @@ function addGameContent(){
     gameTitle.appendChild(computerScoreLabel);
     gameTitle.appendChild(computerScoreValue);
 
+    const tieLabel = document.createElement('span');
+    const tieCounter = document.createElement('span');
+
+    tieLabel.innerText = 'Tie Count: ';
+    tieCounter.innerText = '0';
+    tieCounter.id = 'tieCounter';
+    gameTitle.appendChild(tieLabel);
+    gameTitle.appendChild(tieCounter);
+
     const rockButton = document.createElement('button');
     const paperButton = document.createElement('button');
     const scissorsButton = document.createElement('button');
+
+    rockButton.setAttribute("id", "rockButton");
+    paperButton.setAttribute("id", "paperButton");
+    scissorsButton.setAttribute("id", "scissorsButton");
+
+    rockButton.classList.add("weaponButton");
+    paperButton.classList.add("weaponButton");
+    scissorsButton.classList.add("weaponButton");
 
     rockButton.innerText = "Rock";
     paperButton.innerText = "Paper";
     scissorsButton.innerText = "Scissors";
 
+    rockButton.value = "rock";
+    paperButton.value = "paper";
+    scissorsButton.value = "scissors";
+
     gameContent.appendChild(rockButton);
     gameContent.appendChild(paperButton);
     gameContent.appendChild(scissorsButton);
+
+    initializeCounters();
+
+    let weaponButtons = document.querySelectorAll(".weaponButton");
+
+    function playRound1(e) {
+        curHumanChoice = e.target.value;
+        console.log(curHumanChoice);
+        playRound();
+        updateScore();
+        if(checkGame()){
+            weaponButtons.forEach((e) => {
+                e.removeEventListener('click', playRound1);
+            })
+        }
+    }
+
+    weaponButtons.forEach((e) => {
+        e.addEventListener('click', playRound1);
+    });
 }
 
 const winField = document.querySelector('#inputWins');
 const buttonStart = document.querySelector('#startButton');
 
+function isNumeric(value) {
+    return /^\d+$/.test(value);
+}
+
 buttonStart.addEventListener('click', () => {
-    winGoals = +winField.value;
-    clearContent();
-    addGameContent();
+    if(isNumeric(winField.value) && (+winField.value > 0)){
+        winGoals = +winField.value;
+        clearContent();
+        addGameContent();
+    }    
 });
 
 // playGame();
 
+buttonStart.addEventListener('click', () => {
+
+});
+
+buttonStart.addEventListener('click', (e) => {
+
+});
