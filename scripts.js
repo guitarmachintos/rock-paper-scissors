@@ -1,140 +1,27 @@
-// console.log("heyo1");
+//Main menu content
+const winField = document.querySelector('#inputWins');
+const buttonStart = document.querySelector('#startButton');
 
-function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+function isNumeric(value) {
+    return /^\d+$/.test(value);
 }
 
-function getComputerChoice() {
-    let randomChoice = randomInt(1, 3);
-    switch (randomChoice) {
-        case 1:
-            return "rock";
-        
-        case 2:
-            return "paper";
-        
-        case 3:
-            return "scissors";
+buttonStart.addEventListener('click', () => {
+    if(isNumeric(winField.value) && (+winField.value > 0)){
+        winGoals = +winField.value;
+        clearContent();
+        addGameContent();
+    }    
+});
 
-        default:
-            console.error("Weird random number!");
-            return "weird random number generated!";
-    }
+function clearContent(){
+    document.body.textContent = '';
 }
 
-function capitalizeText(text){
-    return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
-// Test random distribution
-// for (let i = 0; i < 50; i++) {
-//     console.log(getComputerChoice());
-// }
-
-
-
-function playRound() {
-    let computerChoice = getComputerChoice().toLowerCase();
-    let humanChoice = curHumanChoice.toLowerCase();
-
-    //For keeping track who won and print message accordingly
-    let oriHumanScore = humanScore;    
-
-    if(!(humanChoice === "rock" || humanChoice === "paper" || humanChoice === "scissors")){
-        console.error("Invalid human input!");
-        return;
-    }
-    roundPlayed++;
-    if(computerChoice === humanChoice){
-        humanScore++;
-        computerScore++;
-        tieScore++;
-        console.log(`Draw! You both drew ${capitalizeText(computerChoice)}`)        
-        return;
-    }
-    
-    if(computerChoice === "rock"){
-        if(humanChoice === "paper"){
-            humanScore++;
-        }
-        else{
-            computerScore++;
-        }
-    }
-    else if(computerChoice === "paper"){
-        if(humanChoice === "rock"){
-            computerScore++;
-        }
-        else{
-            humanScore++;
-        }
-    }
-    else if(computerChoice === "scissors"){
-        if(humanChoice === "rock"){
-            humanScore++;
-        }
-        else{
-            computerScore++;
-        }
-    }
-    else{
-        console.error("Invalid input");
-        return;
-    }
-
-    if(oriHumanScore !== humanScore){
-        console.log(`You win! your ${capitalizeText(humanChoice)} beats computer's ${capitalizeText(computerChoice)}`);
-    }
-    else{
-        console.log(`You lose! computer's ${capitalizeText(computerChoice)} beats your ${capitalizeText(humanChoice)}`);
-    }
-}
-
-function playGame(nWins) {
-    while (true) {
-        playRound();
-        if(humanScore === nWins || computerScore === nWins){
-            break;
-        }
-    }
-
-    if (humanScore > computerScore){
-        console.log(`You win! ${humanScore}:${computerScore}`);
-    }
-    else if (humanScore < computerScore){
-        console.log(`You lose! ${humanScore}:${computerScore}`);
-    }
-    else{
-        console.log(`Draw! ${humanScore}:${computerScore}`);
-    }
-}
-
-function checkGame() { 
-    let winMessage;
-    if (humanScore > computerScore){
-        winMessage = `You win! ${humanScore}:${computerScore}`;
-    }
-    else if (humanScore < computerScore){
-        winMessage = `You lose! ${humanScore}:${computerScore}`;
-    }
-    else{
-        winMessage = `Draw! ${humanScore}:${computerScore}`;
-    }
-
-    if(humanScore === winGoals || computerScore === winGoals){
-        const finishGame = document.createElement('div');
-        finishGame.innerText = "Game Finished!" +" " + winMessage
-        const gameContent = document.querySelector('.gameContent');
-        gameContent.appendChild(finishGame);
-        return true;
-    }
-    return false;
-}
-
-let humanScoreValue1;
-let computerScoreValue1;
-let tieCounter1;
-let roundCounter1;
+let humanScoreValue1 = null;
+let computerScoreValue1 = null;
+let tieCounter1 = null;
+let roundCounter1 = null;
 
 function initializeCounters(){
     humanScoreValue1 = document.querySelector('#humanScoreValue');
@@ -148,17 +35,6 @@ function updateScore(){
     computerScoreValue1.innerText = computerScore;
     tieCounter1.innerText = tieScore;
     roundCounter1.innerText = roundPlayed;
-}
-
-let humanScore = 0;
-let computerScore = 0;
-let tieScore = 0;
-let roundPlayed = 0;
-let winGoals = 0;
-let curHumanChoice = 'nothing';
-
-function clearContent(){
-    document.body.textContent = '';
 }
 
 function addGameContent(){
@@ -252,27 +128,170 @@ function addGameContent(){
     });
 }
 
-const winField = document.querySelector('#inputWins');
-const buttonStart = document.querySelector('#startButton');
-
-function isNumeric(value) {
-    return /^\d+$/.test(value);
+function resetState(params) {
+    humanScoreValue1 = null;
+    computerScoreValue1 = null;
+    tieCounter1 = null;
+    roundCounter1 = null;
+    winGoals = 0;
+    roundPlayed = 0;
+    humanScore = 0;
+    computerScore = 0;
+    tieScore = 0;
+    curHumanChoice = '';
 }
 
-buttonStart.addEventListener('click', () => {
-    if(isNumeric(winField.value) && (+winField.value > 0)){
-        winGoals = +winField.value;
-        clearContent();
-        addGameContent();
+{/* <h1>Rock Paper Scissors Game!</h1>
+<label for="inputWins">Enter number of wins: </label>
+<input type="text" name="inputWins" id="inputWins" autofocus>
+<button id="startButton">Play</button> */}
+
+function addMainMenuContent() {
+    const h1 = document.createElement('h1');
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    const button = document.createElement('button');
+
+    label.setAttribute('for', 'inputWins');
+    input.setAttribute('type', 'text');
+    input.setAttribute('name', 'inputWins');
+    input.setAttribute('id', 'inputWins');
+    input.setAttribute('autofocus', '');
+    button.setAttribute('id', 'startButton');
+    
+    h1.innerText = "Rock Paper Scissors Game!";
+    label.innerText = "Enter number of wins: ";
+    button.innerText = "Play";
+
+    document.body.appendChild(h1);
+    document.body.appendChild(label);
+    document.body.appendChild(input);
+    document.body.appendChild(button);
+
+    const winField = document.querySelector('#inputWins');
+    const buttonStart = document.querySelector('#startButton');
+
+    buttonStart.addEventListener('click', () => {
+        if(isNumeric(winField.value) && (+winField.value > 0)){
+            winGoals = +winField.value;
+            clearContent();
+            addGameContent();
+        }    
+    });
+
+    input.focus();
+}
+
+function resetGame() {
+    clearContent();
+    resetState();
+    addMainMenuContent();
+}
+
+//Game content and logic
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function capitalizeText(text){
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function getComputerChoice() {
+    let randomChoice = randomInt(1, 3);
+    switch (randomChoice) {
+        case 1:
+            return "rock";
+        
+        case 2:
+            return "paper";
+        
+        case 3:
+            return "scissors";
+
+        default:
+            console.error("Weird random number!");
+            return "weird random number generated!";
+    }
+}
+
+function playRound() {
+    let computerChoice = getComputerChoice().toLowerCase();
+    let humanChoice = curHumanChoice.toLowerCase();
+
+    if(!(humanChoice === "rock" || humanChoice === "paper" || humanChoice === "scissors")){
+        console.error("Invalid human input!");
+        return;
+    }
+
+    roundPlayed++;
+
+    if(computerChoice === humanChoice){
+        humanScore++;
+        computerScore++;
+        tieScore++; 
+        return;
+    }
+    
+    if(computerChoice === "rock"){
+        if(humanChoice === "paper"){
+            humanScore++;
+        }
+        else{
+            computerScore++;
+        }
     }    
-});
+    else if(computerChoice === "paper"){
+        if(humanChoice === "rock"){
+            computerScore++;
+        }
+        else{
+            humanScore++;
+        }
+    }
+    else if(computerChoice === "scissors"){
+        if(humanChoice === "rock"){
+            humanScore++;
+        }
+        else{
+            computerScore++;
+        }
+    }
+    else{
+        console.error("Invalid input");
+        return;
+    }
+}
 
-// playGame();
+function checkGame() { 
+    let winMessage;
+    if (humanScore > computerScore){
+        winMessage = `You win! ${humanScore}:${computerScore}`;
+    }
+    else if (humanScore < computerScore){
+        winMessage = `You lose! ${humanScore}:${computerScore}`;
+    }
+    else{
+        winMessage = `Draw! ${humanScore}:${computerScore}`;
+    }
 
-buttonStart.addEventListener('click', () => {
+    if(humanScore === winGoals || computerScore === winGoals){
+        const finishGame = document.createElement('div');
+        finishGame.innerText = "Game Finished!" +" " + winMessage
+        const gameContent = document.querySelector('.gameContent');
+        gameContent.appendChild(finishGame);
+        const resetButton = document.createElement('button');
+        resetButton.innerText = 'Reset Game!';
+        resetButton.addEventListener('click', resetGame);
+        gameContent.appendChild(resetButton);
+        return true;
+    }
+    return false;
+}
 
-});
-
-buttonStart.addEventListener('click', (e) => {
-
-});
+let winGoals = 0;
+let roundPlayed = 0;
+let humanScore = 0;
+let computerScore = 0;
+let tieScore = 0;
+let curHumanChoice = '';
